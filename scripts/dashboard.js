@@ -4,12 +4,17 @@ import { createAnyBrands } from "../components/brands";
 import { createPages } from "../components/page";
 import { createAnySneakerCard } from "../components/sneakers.card";
 import { errorHandler } from "../libs/error-handler";
+import { removeSessionToken } from "../libs/session-manager";
+import { toast } from "../libs/toast";
+// import debounce from "debounce";
 
 const userName = document.getElementById("userName");
 const timeW = document.getElementById("timeW");
 const brands = document.getElementById("brands");
 const allSneakers = document.getElementById("allSneakers");
 const pages = document.getElementById("pages");
+const searchInput = document.getElementById("search");
+const logout = document.getElementById("logout");
 let Brand;
 
 // ======================== get User Name and show brands and time welcome ====================
@@ -27,9 +32,11 @@ async function init() {
 // ======================== set time for welcome in header ====================
 function timeWelcome() {
   let hour = new Date().getHours();
-  if (hour < 12) {
+  console.log(hour);
+  
+  if (hour < 12 && 3 < hour ) {
     timeW.innerText = "Good Morning";
-  } else if (hour < 18) {
+  } else if (hour < 18 && hour > 12) {
     timeW.innerText = "Good Evening";
   } else timeW.innerText = "Good Night";
 }
@@ -60,6 +67,7 @@ function render({ data, totalPages, page }) {
       html += createPages(i, "!bg-gray-600 text-white");
     } else html += createPages(i);
   }
+  chooseSneaker();
   pages.innerHTML = html;
 }
 
@@ -80,7 +88,33 @@ async function setSneakers(page = 1, cb, brand) {
     errorHandler(error);
   }
 }
-// ======================= click button =======================
+
+// ======================= find Sneakers by Id =======================
+function find(event) {
+  let parent = event.target;
+  while (!parent.dataset.id) {
+    parent = parent.parentElement;
+  }
+  window.location.href = `/sneaker?id=${parent.dataset.id}`;
+}
+// ===================== logOut button ====================
+logout.addEventListener("click", ()=>{
+  removeSessionToken();
+  toast("Logged out","success")
+  setTimeout(() => {
+    window.location.href = "/login";
+  }, 2000);
+})
+
+// ======================== Search input ================
+searchInput.addEventListener("input", (event) => {
+  const query = event.target.value;
+  if (query.length > 2) {
+    window.location.href = `/search?search=${query}`;
+  }
+});
+
+// ++======================= click button =======================++
 
 //================== filter by Brands ================
 brands.addEventListener("click", (event) => {
@@ -94,14 +128,7 @@ pages.addEventListener("click", (event) => {
 });
 
 //========== find sneaker by id ===========
-allSneakers.addEventListener("click",findSneakerId);
-function findSneakerId(event) {
-  let parent = event.target;
-  while (!parent.dataset.id) {
-    parent = parent.parentElement;
-  }
-  window.location.href = `/sneaker?id=${parent.dataset.id}`;
-}
+allSneakers.addEventListener("click",find);
 
 // ============================ call user and sneakers ================================
 init();

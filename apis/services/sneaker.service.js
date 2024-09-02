@@ -12,6 +12,6 @@ export async function getSneakers(params) {
     return response.data;
 }
 export async function findSneaker(id) {
-    const response = await axiosClient().get(urls.sneaker.find(id))
+    const response = await axiosClient().get(urls.sneaker.find(id));
     return response.data;
 }
