@@ -30,7 +30,7 @@ async function renderS(pid) {
 }
 
 // ======================== Create Query for page ========================
-export function query(pid) {
+ function query(pid) {
   try {
     if (!pid) {
       pid = window.location.href.split("?")[1];

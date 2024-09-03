@@ -2,7 +2,7 @@ import { getBrands, getSneakers } from "../apis/services/sneaker.service";
 import { getUserInfo } from "../apis/services/user.service";
 import { createAnyBrands } from "../components/brands";
 import { createPages } from "../components/page";
-import { createAnySneakerCard } from "../components/sneakers.card";
+import { chooseSneaker, createAnySneakerCard } from "../components/sneakers.card";
 import { errorHandler } from "../libs/error-handler";
 import { removeSessionToken } from "../libs/session-manager";
 import { toast } from "../libs/toast";
@@ -24,6 +24,7 @@ async function init() {
     userName.innerText = response.username;
     timeWelcome();
     showBrands();
+    setSneakers();
   } catch (error) {
     errorHandler(error);
   }
@@ -109,7 +110,7 @@ logout.addEventListener("click", ()=>{
 // ======================== Search input ================
 searchInput.addEventListener("input", (event) => {
   const query = event.target.value;
-  if (query.length > 2) {
+  if (query.length > 1) {
     window.location.href = `/search?search=${query}`;
   }
 });
@@ -132,4 +133,4 @@ allSneakers.addEventListener("click",find);
 
 // ============================ call user and sneakers ================================
 init();
-setSneakers();
+
